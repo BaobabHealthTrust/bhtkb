@@ -1,0 +1,21 @@
+{
+  "name": "bht-hotline-reference-module",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "private": true,
+  "dependencies": {
+    "body-parser": "^1.13.3",
+    "clj-fuzzy": "^0.3.1",
+    "express": "^4.13.3",
+    "jade": ">= 0.0.1",
+    "lodash": "^3.10.1",
+    "node-rest-client": "^1.5.1",
+    "portfinder": "^0.4.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Chimwemwe Kachaje",
+  "license": "ISC"
+}

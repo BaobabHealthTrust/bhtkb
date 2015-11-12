@@ -1,0 +1,52 @@
+//
+   Created by chimwemwe on 11/10/15.
+
+extends layout
+
+block mainContent
+
+    script(src="/javascripts/new.js")
+
+    form(action="/update" method="post")
+
+        table(width="100%" cellpadding=5)
+            tr
+                th(colspan=4 style="font-size: 24px; color: #3c60b1; border-bottom: 1px solid #ccc;" )
+                    | Create New Reference Material
+            tr
+                td(colspan=4)
+                    | &nbsp;
+            tr
+                td(align="right")
+                    | Topic
+                td(style="width: 20px; text-align: center;")
+                    | :
+                td
+                    input(class="textbox" id="topic" name="topic")
+            tr
+                td(align="right" style="vertical-align: top;")
+                    | Article
+                td(style="width: 20px; text-align: center; vertical-align: top;" )
+                    | :
+                td
+                    textarea(class="textbox" id="article" name="article" style="height: 200px;")
+                td
+                    | &nbsp;
+            tr
+                td(align="right")
+                    | Symptoms
+                td(style="width: 20px; text-align: center;")
+                    | :
+                td
+                    input(class="textbox" name="symptom")
+                td
+                    | &nbsp;
+            tbody(id="tbody")
+            tr
+                td(colspan=4 align="center")
+                    input(class="button red" value="Cancel" onmousedown="window.location = '/';"
+                            style="text-align: center; -moz-user-select: none; font-size: 16px !important; min-height: 20px !important; width: 100px;")
+                    input(class="button blue" value="Add Symptom" onmousedown="addSymptom()"
+                            style="text-align: center; -moz-user-select: none; font-size: 16px !important; min-height: 20px !important;" type="button")
+                    input(class="button blue" value="Save" style="text-align: center; -moz-user-select: none; font-size: 16px !important; min-height: 20px !important;"
+                            type="button" onmousedown="validate()")
