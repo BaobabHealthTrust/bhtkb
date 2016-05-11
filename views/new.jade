@@ -49,4 +49,19 @@ block mainContent
                     input(class="button blue" value="Add Symptom" onmousedown="addSymptom()"
                             style="text-align: center; -moz-user-select: none; font-size: 16px !important; min-height: 20px !important;" type="button")
                     input(class="button blue" value="Save" style="text-align: center; -moz-user-select: none; font-size: 16px !important; min-height: 20px !important;"
-                            type="button" onmousedown="validate()")
+                            type="button" onmousedown="removeArticle(); validate()")
+
+    script(src="/javascripts/nicEdit.js")
+
+    script.
+        var article;
+
+        function addArticle(){
+            article = new nicEditor({fullPanel : true}).panelInstance('article');
+        }
+
+        function removeArticle() {
+            article.removeInstance('article');
+        }
+
+        bkLib.onDomLoaded(function() { addArticle(); });
