@@ -61,6 +61,7 @@ function bhtKBCreateIcon() {
     icon.style.top = "15px";
     icon.style.cursor = "pointer";
     icon.id = "bhtKBIcoWiki";
+    icon.style.zIndex = 1000;
 
     icon.onmousedown = function () {
 
@@ -100,6 +101,7 @@ function bhtKBCreateDropDown() {
     bhtKBPopup.style.left = (pos[3] - 800 + pos[0]) + "px";
     bhtKBPopup.style.overflow = "hidden";
     bhtKBPopup.style.border = "1px solid #3c60b1";
+    bhtKBPopup.style.zIndex = 1000;
 
     document.body.appendChild(bhtKBPopup);
 
