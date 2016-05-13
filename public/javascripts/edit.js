@@ -149,12 +149,12 @@ function validate() {
 
 }
 
-function ajaxRequest(url, callback) {
+function ajaxRequest(url, callback, defaults) {
 
     var httpRequest = new XMLHttpRequest();
 
     httpRequest.onreadystatechange = function () {
-        handleAjaxRequest(httpRequest, callback);
+        handleAjaxRequest(httpRequest, callback, defaults);
     };
     try {
         httpRequest.open("GET", url, true);
@@ -164,7 +164,7 @@ function ajaxRequest(url, callback) {
     }
 }
 
-function handleAjaxRequest(aXMLHttpRequest, callback) {
+function handleAjaxRequest(aXMLHttpRequest, callback, defaults) {
     if (!aXMLHttpRequest) return;
 
     if (aXMLHttpRequest.readyState == 4 && (aXMLHttpRequest.status == 200 ||
@@ -172,12 +172,12 @@ function handleAjaxRequest(aXMLHttpRequest, callback) {
 
         var result = JSON.parse(aXMLHttpRequest.responseText);
 
-        callback(result);
+        callback(result, defaults);
 
     }
 }
 
-function loadConcepts(json) {
+function loadConcepts(json, defaults) {
 
     if (!json)
         return;
@@ -192,6 +192,20 @@ function loadConcepts(json) {
 
             opt.innerHTML = json[i];
 
+            if(defaults.includes(json[i])) {
+
+                opt.setAttribute("selected", true);
+
+                opt.onclick = function(){
+
+                    this.setAttribute("selected", false);
+
+                    // this.removeAttribute("selected");
+
+                }
+
+            }
+
             __$("concepts").appendChild(opt);
 
         }
@@ -200,4 +214,3 @@ function loadConcepts(json) {
 
 }
 
-ajaxRequest("/concepts", loadConcepts);

@@ -109,8 +109,20 @@ module.exports = function (router) {
 
             var article = articles[req.params.id];
 
+            var topicConcepts = {};
+
+            if (fs.existsSync(__dirname + "/../public/data/topic_concepts.json")) {
+
+                topicConcepts = require(__dirname + "/../public/data/topic_concepts.json");
+
+            }
+
+            var conceptList = topicConcepts[req.params.id];
+
+            console.log(conceptList);
+
             res.render('edit', {title: "Reference Definitions", topic: req.params.id, keywords: keywords,
-                article: article});
+                article: article, defaults: JSON.stringify(conceptList)});
 
         })
 
@@ -134,6 +146,78 @@ module.exports = function (router) {
             if (fs.existsSync(__dirname + "/../public/data/topics.json")) {
 
                 topics = require(__dirname + "/../public/data/topics.json");
+
+            }
+
+            var topicConcepts = {};
+
+            if (fs.existsSync(__dirname + "/../public/data/topic_concepts.json")) {
+
+                topicConcepts = require(__dirname + "/../public/data/topic_concepts.json");
+
+            }
+
+            var keys = Object.keys(topics);
+
+            var page = parseInt(req.params.id) - 1;
+
+            var result = {
+                data: [],
+                total: keys.length,
+                pages: Math.ceil(keys.length / pageSize),
+                page: page + 1
+            };
+
+            var limit = ((page * pageSize) + pageSize);
+
+            var start = page * pageSize;
+
+            if (limit > keys.length) {
+
+                limit = keys.length;
+
+            }
+
+            for (var i = start; i < limit; i++) {
+
+                var key = keys[i];
+
+                var data = {};
+
+                data[key] = {};
+
+                data[key]["keywords"] = topics[key];
+
+                data[key]["concepts"] = topicConcepts[key];
+
+                result.data.push(data);
+
+            }
+
+            res.status(200).json(result)
+
+        })
+
+    router.route('/keywords/:id')
+        .get(function (req, res) {
+
+            var dir = __dirname + "/../public/data";
+
+            mkdirp(dir, function (err) {
+
+                // path was created unless there was error
+
+            });
+
+            var url_parts = url.parse(req.url, true);
+
+            var query = url_parts.query;
+
+            var topics = {};
+
+            if (fs.existsSync(__dirname + "/../public/data/keywords.json")) {
+
+                topics = require(__dirname + "/../public/data/keywords.json");
 
             }
 
@@ -219,6 +303,22 @@ module.exports = function (router) {
 
             }
 
+            var concepts = {};
+
+            if (fs.existsSync(__dirname + "/../public/data/concepts.json")) {
+
+                concepts = require(__dirname + "/../public/data/concepts.json");
+
+            }
+
+            var topicConcepts = {};
+
+            if (fs.existsSync(__dirname + "/../public/data/topic_concepts.json")) {
+
+                topicConcepts = require(__dirname + "/../public/data/topic_concepts.json");
+
+            }
+
             var params = req.body;
 
             if (typeof(params.symptom) == "string") {
@@ -265,6 +365,74 @@ module.exports = function (router) {
 
             }
 
+            if (typeof(params.concepts) == "string") {
+
+                if (concepts[params.concepts]) {
+
+                    if (!concepts[params.concepts].includes(params.topic)) {
+
+                        concepts[params.concepts].push(params.topic);
+
+                    }
+
+                } else {
+
+                    concepts[params.concepts] = [params.topic];
+
+                }
+
+                if (topicConcepts[params.concepts]) {
+
+                    if (!topicConcepts[params.topic].includes(params.concepts)) {
+
+                        topicConcepts[params.topic].push(params.concepts);
+
+                    }
+
+                } else {
+
+                    topicConcepts[params.topic] = [params.concepts];
+
+                }
+
+            } else {
+
+                for (var i = 0; i < params.concepts.length; i++) {
+
+                    var concept = params.concepts[i];
+
+                    if (concepts[concept]) {
+
+                        if (!concepts[concept].includes(params.topic)) {
+
+                            concepts[concept].push(params.topic);
+
+                        }
+
+                    } else {
+
+                        concepts[concept] = [params.topic];
+
+                    }
+
+                    if (topicConcepts[params.topic]) {
+
+                        if (!topicConcepts[params.topic].includes(concept)) {
+
+                            topicConcepts[params.topic].push(concept);
+
+                        }
+
+                    } else {
+
+                        topicConcepts[params.topic] = [concept];
+
+                    }
+
+                }
+
+            }
+
             articles[params.topic] = params.article;
 
             topics[params.topic] = (typeof(params.symptom) == "string" ? [params.symptom] : params.symptom);
@@ -300,6 +468,26 @@ module.exports = function (router) {
             });
 
             fs.writeFile(__dirname + "/../public/data/classifications.json", JSON.stringify(classifications), function (err, file) {
+
+                if (err) {
+
+                    console.log(err.message);
+
+                }
+
+            });
+
+            fs.writeFile(__dirname + "/../public/data/concepts.json", JSON.stringify(concepts), function (err, file) {
+
+                if (err) {
+
+                    console.log(err.message);
+
+                }
+
+            });
+
+            fs.writeFile(__dirname + "/../public/data/topic_concepts.json", JSON.stringify(topicConcepts), function (err, file) {
 
                 if (err) {
 
@@ -627,6 +815,75 @@ module.exports = function (router) {
             res.status(200).json({article: article, topic: req.params.id});
 
         });
+
+    router.route('/list_by_keyword')
+        .get(function (req, res) {
+
+            var dir = __dirname + "/../public/data";
+
+            mkdirp(dir, function (err) {
+
+                // path was created unless there was error
+
+            });
+
+            res.render('list_by_keyword', {title: "Reference Content By Keyword"});
+
+        })
+
+    router.route('/list_by_topic')
+        .get(function (req, res) {
+
+            var dir = __dirname + "/../public/data";
+
+            mkdirp(dir, function (err) {
+
+                // path was created unless there was error
+
+            });
+
+            res.render('list_by_topic', {title: "Reference Content By Topic"});
+
+        })
+
+    router.route('/concepts')
+        .get(function (req, res) {
+
+            var config = require(__dirname + "/../config/database.json");
+
+            var knex = require('knex')({
+                client: 'mysql',
+                connection: {
+                    host: config.host,
+                    user: config.user,
+                    password: config.password,
+                    database: config.database
+                }
+            });
+
+            knex.select('name').from('concept_name')
+                .then(function (names) {
+
+                    var data = [];
+
+                    for(var i =0; i < names.length; i++) {
+
+                        data.push(names[i].name);
+
+                    }
+
+                    res.status(200).json(data);
+
+                })
+                .catch(function(err) {
+
+                    console.log(err.message);
+
+                    res.status(404).json(JSON.stringify(err));
+
+                })
+
+        })
 
     return router;
 

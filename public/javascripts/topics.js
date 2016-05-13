@@ -112,7 +112,7 @@ function loadPage() {
 
                 }
 
-                cell3.appendChild(btnEdit);
+                // cell3.appendChild(btnEdit);
 
                 var btnDelete = document.createElement("img");
                 btnDelete.setAttribute("tag", key);
@@ -129,7 +129,7 @@ function loadPage() {
 
                 }
 
-                cell4.appendChild(btnDelete);
+                // cell4.appendChild(btnDelete);
 
             }
 

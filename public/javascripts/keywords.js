@@ -80,14 +80,9 @@ function loadPage() {
                 row.appendChild(cell1);
 
                 var cell2 = document.createElement("td");
-                cell2.innerHTML = data.data[i][key]["keywords"].toString();
+                cell2.innerHTML = data.data[i][key].toString();
 
                 row.appendChild(cell2);
-
-                var cell5 = document.createElement("td");
-                cell5.innerHTML = data.data[i][key]["concepts"].toString();
-
-                row.appendChild(cell5);
 
                 var cell3 = document.createElement("td");
                 cell3.style.width = "40px";
@@ -112,7 +107,7 @@ function loadPage() {
 
                 }
 
-                cell3.appendChild(btnEdit);
+                // cell3.appendChild(btnEdit);
 
                 var btnDelete = document.createElement("img");
                 btnDelete.setAttribute("tag", key);
@@ -129,7 +124,7 @@ function loadPage() {
 
                 }
 
-                cell4.appendChild(btnDelete);
+                // cell4.appendChild(btnDelete);
 
             }
 
@@ -169,7 +164,7 @@ function loadPage() {
 
                     __$("btnFirst").onmousedown = function () {
 
-                        ajaxRequest("/topics/" + this.getAttribute("target"));
+                        ajaxRequest("/keywords/" + this.getAttribute("target"));
 
                     };
 
@@ -179,7 +174,7 @@ function loadPage() {
 
                     __$("btnPrevious").onmousedown = function () {
 
-                        ajaxRequest("/topics/" + this.getAttribute("target"));
+                        ajaxRequest("/keywords/" + this.getAttribute("target"));
 
                     };
 
@@ -193,7 +188,7 @@ function loadPage() {
 
                     __$("btnLast").onmousedown = function () {
 
-                        ajaxRequest("/topics/" + this.getAttribute("target"));
+                        ajaxRequest("/keywords/" + this.getAttribute("target"));
 
                     };
 
@@ -203,7 +198,7 @@ function loadPage() {
 
                     __$("btnNext").onmousedown = function () {
 
-                        ajaxRequest("/topics/" + this.getAttribute("target"));
+                        ajaxRequest("/keywords/" + this.getAttribute("target"));
 
                     };
 
@@ -237,4 +232,4 @@ function loadPage() {
 
 }
 
-ajaxRequest("/topics/1");
+ajaxRequest("/keywords/1");

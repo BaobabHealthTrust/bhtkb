@@ -1,18 +1,12 @@
 extends layout
-
 block mainContent
-
-    script(src="/javascripts/index.js")
-
+    script(src="/javascripts/topics.js")
     // script(src="/javascripts/bhtKB.js")
-
     center
         h1(style="color: #3c60b1;")= title
-        p View and Define #{title}
-
+        p View #{title}
         hr(style="width: 20%; border: 1px solid #ccc;")
         br
-
         table(style="margin: auto; width: 100%; border-collapse: collapse;" cellspacing=1 cellpadding=10 border=1)
             tr(style="background-color: #ccc; color: #333;")
                 th(align="left")
@@ -44,8 +38,3 @@ block mainContent
                             td
                                 button(class="gray" style="font-weight: normal; min-height: 25px !important; font-size: 16px !important; min-width: 150px;" id="btnLast")
                                     | Last Page
-                        tr
-                            td(colspan=5 align="center")
-                                button(class="blue" style="font-weight: normal; min-height: 25px !important; font-size: 16px !important; min-width: 150px;" id="btnAdd"
-                                onmousedown="window.location='/new';")
-                                    | Add New Material

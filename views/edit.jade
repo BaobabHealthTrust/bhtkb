@@ -5,7 +5,7 @@ extends layout
 
 block mainContent
 
-    script(src="/javascripts/new.js")
+    script(src="/javascripts/edit.js")
 
     form(action="/update" method="post")
 
@@ -25,6 +25,13 @@ block mainContent
                     input(class="textbox" id="topic" name="topic" value="#{topic}")
             tr
                 td(align="right" style="vertical-align: top;")
+                    | Concept
+                td(style="width: 20px; text-align: center; vertical-align: top;")
+                    | :
+                td
+                    select(class="textbox" name="concepts" id="concepts" size=10 multiple)
+            tr
+                td(align="right" style="vertical-align: top;")
                     | Article
                 td(style="width: 20px; text-align: center; vertical-align: top;" )
                     | :
@@ -35,7 +42,7 @@ block mainContent
                     | &nbsp;
             tr
                 td(align="right")
-                    | Symptoms
+                    | Keywords
                 td(style="width: 20px; text-align: center;")
                     | :
                 td
@@ -68,7 +75,7 @@ block mainContent
                 td(colspan=4 align="center")
                     input(class="button red" value="Cancel" onmousedown="window.location = '/';"
                         style="text-align: center; -moz-user-select: none; font-size: 16px !important; min-height: 20px !important; width: 100px;")
-                    input(class="button blue" value="Add Symptom" onmousedown="addSymptom()"
+                    input(class="button blue" value="Add Keyword" onmousedown="addSymptom()"
                         style="text-align: center; -moz-user-select: none; font-size: 16px !important; min-height: 20px !important;" type="button")
                     input(class="button blue" value="Save" style="text-align: center; -moz-user-select: none; font-size: 16px !important; min-height: 20px !important;"
                         type="button" onmousedown="removeArticle(); validate()")
@@ -85,3 +92,4 @@ block mainContent
             article.removeInstance('article');
         }
         bkLib.onDomLoaded(function() { addArticle(); });
+        ajaxRequest("/concepts", loadConcepts, !{defaults});
