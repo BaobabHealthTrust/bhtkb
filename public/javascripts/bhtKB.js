@@ -690,7 +690,7 @@ function bhtKBRemoveSymptom(symptom) {
 
 function bhtKBRefreshReferences() {
 
-    bhtKBAjaxRequest(IP_ADDRESS + "/references/1?s=" + encodeURI(JSON.stringify(bhtKBSelectedSymptoms)), bhtKBProcessReferences);
+    bhtKBAjaxRequest(IP_ADDRESS + "/references/1?s=" + encodeURIComponent(JSON.stringify(bhtKBSelectedSymptoms)), bhtKBProcessReferences);
 
 }
 
@@ -821,7 +821,7 @@ function bhtKBShowTopic(topic) {
 
     html += topic.article + "</body>";
 
-    var page = 'data:text/html;charset=utf-8,' + encodeURI(html);
+    var page = 'data:text/html;charset=utf-8,' + encodeURIComponent(html);
 
     if (__$("bhtKBIFrame")) {
 
@@ -843,7 +843,7 @@ function bhtKBRemoveTopicDisplay() {
 
 function bhtKBFetchTopic(topic) {
 
-    bhtKBAjaxRequest(IP_ADDRESS + "/fetchTopic/" + encodeURI(topic), bhtKBShowTopic);
+    bhtKBAjaxRequest(IP_ADDRESS + "/fetchTopic/" + encodeURIComponent(topic), bhtKBShowTopic);
 
 }
 

@@ -200,4 +200,63 @@ function loadConcepts(json) {
 
 }
 
+function imgToDataURI(image) {
+
+    if (image.src.match(/^data\:image/))
+        return;
+
+    var c = document.createElement('canvas');
+    var ctx = c.getContext("2d");
+
+    c.width = image.naturalWidth;
+    c.height = image.naturalHeight;
+    ctx.drawImage(image, 0, 0);
+
+    image.src = c.toDataURL();
+
+}
+
+function reTagImages() {
+
+    clearInterval(intImages);
+
+    var images = document.getElementsByTagName("img");
+
+    for (var i = 0; i < images.length; i++) {
+
+        if (!images[i].crossOrigin) {
+
+            images[i].crossOrigin = "Anonymous";
+
+        } else if(!images[i].getAttribute("loaded")) {
+
+            images[i].onload = function() {
+
+                this.setAttribute("loaded", true);
+
+            }
+
+        } else {
+
+            if (images[i].getAttribute("loaded") && !images[i].src.match(/^data\:image/))
+                imgToDataURI(images[i]);
+
+        }
+
+    }
+
+    intImages = setInterval(function () {
+
+        reTagImages();
+
+    }, 500);
+
+}
+
+var intImages = setInterval(function () {
+
+    reTagImages();
+
+}, 500);
+
 ajaxRequest("/concepts", loadConcepts);
