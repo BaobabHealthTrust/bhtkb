@@ -92,13 +92,13 @@ function bhtKBCreateDropDown() {
     var bhtKBPopup = document.createElement("div");
     bhtKBPopup.id = "bhtKBPopup";
     bhtKBPopup.style.position = "absolute";
-    bhtKBPopup.style.width = "800px";
+    bhtKBPopup.style.width = "90%";
     bhtKBPopup.style.height = "600px";
     bhtKBPopup.style.top = (pos[1] + pos[2] + 5) + "px";
     bhtKBPopup.style.backgroundColor = "rgba(255,255,255,0.99)";
     bhtKBPopup.style.border = "1px solid #ccc";
     bhtKBPopup.style.boxShadow = "10px 10px 5px #888888";
-    bhtKBPopup.style.left = (pos[3] - 800 + pos[0]) + "px";
+    bhtKBPopup.style.right = "20px";
     bhtKBPopup.style.overflow = "hidden";
     bhtKBPopup.style.border = "1px solid #3c60b1";
     bhtKBPopup.style.zIndex = 1000;
@@ -137,7 +137,7 @@ function bhtKBCreateDropDown() {
     rows[0].appendChild(cell0_1);
 
     var cell1_0 = document.createElement("td");
-    cell1_0.innerHTML = "Symptom:";
+    cell1_0.innerHTML = "Keyword:";
     cell1_0.style.width = "30px";
     cell1_0.style.paddingRight = "0px";
     cell1_0.style.fontSize = "18px";
@@ -151,7 +151,7 @@ function bhtKBCreateDropDown() {
         type: "text",
         style: "width: 100%; border: 1px solid #3c60b1; padding: 10px; font-size: 18px;",
         value: "",
-        placeholder: "Search for symptoms",
+        placeholder: "Search for keywords",
         id: "bhtKBSymptoms"
     });
 
@@ -160,10 +160,11 @@ function bhtKBCreateDropDown() {
     if (__$("bhtKBSymptoms")) {
 
         __$("bhtKBSymptoms").onmousedown = function () {
+
             if (__$("bhtKBKeysPopup")) {
                 bhtKBHideBasicKeyboard();
             } else {
-                bhtKBShowBasicKEyBoard(this);
+                bhtKBShowBasicKeyBoard(this);
 
                 if(__$("bhtKBSymptoms")) {
 
@@ -260,6 +261,10 @@ function bhtKBRemoveDropDown() {
 
     bhtKBCurrentSymptom = "";
 
+    bhtKBData = [];
+
+    bhtKBSelectedSymptoms = [];
+
     bhtKBHideBasicKeyboard();
 
     if (__$("bhtKBPopup")) {
@@ -275,7 +280,7 @@ function bhtKBRemoveDropDown() {
     }
 }
 
-function bhtKBShowBasicKEyBoard(parent) {
+function bhtKBShowBasicKeyBoard(parent) {
 
     if (!parent)
         return;
@@ -293,6 +298,7 @@ function bhtKBShowBasicKEyBoard(parent) {
     container.style.top = (pos[1] + pos[2]) + "px";
     container.style.position = "absolute";
     container.style.boxShadow = "4px 4px 2px #888888";
+    container.style.zIndex = 1001;
 
     document.body.appendChild(container);
 
@@ -580,7 +586,7 @@ function bhtKBBuildDisplay() {
         table.appendChild(tr1);
 
         var td1_1 = document.createElement("th");
-        td1_1.innerHTML = "Symptoms";
+        td1_1.innerHTML = "Keywords";
         td1_1.style.color = "#333";
         td1_1.style.backgroundColor = "#ccc";
 
@@ -629,22 +635,22 @@ function bhtKBBuildDisplay() {
 
 }
 
-function bhtKBAddSymptom(symptom) {
+function bhtKBAddSymptom(keyword) {
 
     if(__$("bhtKBDivSymptoms")) {
 
         // __$("bhtKBDivSymptoms")
 
-        var existing = __$("bhtKBDivSymptoms").getElementsByClassName(symptom);
+        var existing = __$("bhtKBDivSymptoms").getElementsByClassName(keyword);
 
         if(existing.length <= 0) {
 
             var div = document.createElement("div");
             div.style.border = "1px solid #ccc";
-            div.className = symptom;
-            div.innerHTML = "<div style='float: left;'>" + symptom + "</div><img src='" + bhtKBIcoClose +
+            div.className = keyword;
+            div.innerHTML = "<div style='float: left;'>" + keyword + "</div><img src='" + bhtKBIcoClose +
                 "' height='40' style='cursor: pointer; float: right; margin-top: -8px; margin-right: -8px;' " +
-                "onmousedown='bhtKBRemoveSymptom(this.getAttribute(\"tag\").trim());' tag='" + symptom + "' />";
+                "onmousedown='bhtKBRemoveSymptom(this.getAttribute(\"tag\").trim());' tag='" + keyword + "' />";
             div.style.padding = "20px";
             div.style.margin = "2px";
             div.style.fontSize = "18px";
@@ -652,7 +658,7 @@ function bhtKBAddSymptom(symptom) {
 
             __$("bhtKBDivSymptoms").appendChild(div);
 
-            bhtKBSelectedSymptoms.push(symptom);
+            bhtKBSelectedSymptoms.push(keyword);
 
             bhtKBRefreshReferences();
 
@@ -662,11 +668,11 @@ function bhtKBAddSymptom(symptom) {
 
 }
 
-function bhtKBRemoveSymptom(symptom) {
+function bhtKBRemoveSymptom(keyword) {
 
     if(__$("bhtKBDivSymptoms")) {
 
-        var controls = __$("bhtKBDivSymptoms").getElementsByClassName(symptom);
+        var controls = __$("bhtKBDivSymptoms").getElementsByClassName(keyword);
 
         if(controls.length > 0) {
 
@@ -674,7 +680,7 @@ function bhtKBRemoveSymptom(symptom) {
 
         }
 
-        var index = bhtKBSelectedSymptoms.indexOf(symptom);
+        var index = bhtKBSelectedSymptoms.indexOf(keyword);
 
         if(index >= 0) {
 
@@ -743,15 +749,16 @@ function bhtKBShowTopic(topic) {
     var bhtKBPopup = document.createElement("div");
     bhtKBPopup.id = "bhtKBTopicPopup";
     bhtKBPopup.style.position = "absolute";
-    bhtKBPopup.style.width = "800px";
+    bhtKBPopup.style.width = "90%";
     bhtKBPopup.style.height = (600 - 48) + "px";
     bhtKBPopup.style.top = (pos[1] + pos[2] + 48 + 5) + "px";
     bhtKBPopup.style.backgroundColor = "rgba(255,255,255,0.99)";
     bhtKBPopup.style.border = "1px solid #ccc";
     bhtKBPopup.style.boxShadow = "10px 10px 5px #888888";
-    bhtKBPopup.style.left = (pos[3] - 800 + pos[0]) + "px";
+    bhtKBPopup.style.right = "20px";
     bhtKBPopup.style.overflow = "hidden";
     bhtKBPopup.style.border = "1px solid #3c60b1";
+    bhtKBPopup.style.zIndex = 1002;
 
     document.body.appendChild(bhtKBPopup);
 
@@ -817,7 +824,7 @@ function bhtKBShowTopic(topic) {
     div.appendChild(bhtKBIFrame);
 
     var html = "<body><style>body{margin:0px;font:18px'LucidaGrande',Helvetica,Arial,sans-serif;-moz-user-select:none;" +
-        "overflow:hidden;}.news{background-color:red;}.sports{background-color:blue;}.none{background-color:black;}</style>";
+        "overflow:auto;}.news{background-color:red;}.sports{background-color:blue;}.none{background-color:black;}</style>";
 
     html += topic.article + "</body>";
 

@@ -145,7 +145,7 @@ module.exports = function (router) {
 
             if (fs.existsSync(__dirname + "/../public/data/topics.json")) {
 
-                topics = require(__dirname + "/../public/data/topics.json");
+                topics = JSON.parse(fs.readFileSync(__dirname + "/../public/data/topics.json"));
 
             }
 
@@ -153,7 +153,7 @@ module.exports = function (router) {
 
             if (fs.existsSync(__dirname + "/../public/data/topic_concepts.json")) {
 
-                topicConcepts = require(__dirname + "/../public/data/topic_concepts.json");
+                topicConcepts = JSON.parse(fs.readFileSync(__dirname + "/../public/data/topic_concepts.json"));
 
             }
 
@@ -217,7 +217,7 @@ module.exports = function (router) {
 
             if (fs.existsSync(__dirname + "/../public/data/keywords.json")) {
 
-                topics = require(__dirname + "/../public/data/keywords.json");
+                topics = JSON.parse(fs.readFileSync(__dirname + "/../public/data/keywords.json"));
 
             }
 
@@ -536,6 +536,22 @@ module.exports = function (router) {
 
             }
 
+            var concepts = {};
+
+            if (fs.existsSync(__dirname + "/../public/data/concepts.json")) {
+
+                concepts = require(__dirname + "/../public/data/concepts.json");
+
+            }
+
+            var topicConcepts = {};
+
+            if (fs.existsSync(__dirname + "/../public/data/topic_concepts.json")) {
+
+                topicConcepts = require(__dirname + "/../public/data/topic_concepts.json");
+
+            }
+
             delete articles[req.params.id];
 
             fs.writeFile(__dirname + "/../public/data/articles.json", JSON.stringify(articles), function (err, file) {
@@ -592,6 +608,51 @@ module.exports = function (router) {
 
             });
 
+
+            var keys = Object.keys(concepts);
+
+            for (var i = 0; i < keys.length; i++) {
+
+                var key = keys[i];
+
+                var index = concepts[key].indexOf(req.params.id);
+
+                if (index >= 0) {
+
+                    concepts[key].splice(index, 1);
+
+                }
+
+                if (concepts[key].length <= 0) {
+
+                    delete concepts[key];
+
+                }
+
+            }
+
+            fs.writeFile(__dirname + "/../public/data/concepts.json", JSON.stringify(concepts), function (err, file) {
+
+                if (err) {
+
+                    console.log(err.message);
+
+                }
+
+            });
+
+            delete topicConcepts[req.params.id];
+
+            fs.writeFile(__dirname + "/../public/data/topic_concepts.json", JSON.stringify(topicConcepts), function (err, file) {
+
+                if (err) {
+
+                    console.log(err.message);
+
+                }
+
+            });
+
             var keys = Object.keys(topics);
 
             var page = 0;
@@ -619,7 +680,11 @@ module.exports = function (router) {
 
                 var data = {};
 
-                data[key] = topics[key];
+                data[key] = {};
+
+                data[key]["keywords"] = topics[key];
+
+                data[key]["concepts"] = topicConcepts[key];
 
                 result.data.push(data);
 
@@ -648,7 +713,7 @@ module.exports = function (router) {
 
             if (fs.existsSync(__dirname + "/../public/data/classifications.json")) {
 
-                classifications = require(__dirname + "/../public/data/classifications.json");
+                classifications = JSON.parse(fs.readFileSync(__dirname + "/../public/data/classifications.json"));
 
             }
 
@@ -688,6 +753,41 @@ module.exports = function (router) {
                 result.data.push(key);
 
             }
+
+            /*
+             var result = {
+             data: [],
+             total: keys.length,
+             pages: Math.ceil(keys.length / pageSize),
+             page: page + 1
+             };
+
+             var limit = ((page * pageSize) + pageSize);
+
+             var start = page * pageSize;
+
+             if (limit > keys.length) {
+
+             limit = keys.length;
+
+             }
+
+             for (var i = start; i < limit; i++) {
+
+             var key = keys[i];
+
+             var data = {};
+
+             data[key] = {};
+
+             data[key]["keywords"] = topics[key];
+
+             data[key]["concepts"] = topicConcepts[key];
+
+             result.data.push(data);
+
+             }
+             */
 
             res.status(200).json(result)
 
