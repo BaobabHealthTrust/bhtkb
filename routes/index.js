@@ -319,6 +319,14 @@ module.exports = function (router) {
 
             }
 
+            var concept_classifications = {};
+
+            if (fs.existsSync(__dirname + "/../public/data/concept_classifications.json")) {
+
+                concept_classifications = require(__dirname + "/../public/data/concept_classifications.json");
+
+            }
+
             var params = req.body;
 
             if (typeof(params.symptom) == "string") {
@@ -395,6 +403,8 @@ module.exports = function (router) {
 
                 }
 
+                concept_classifications = classify(params.concepts, concept_classifications);
+
             } else {
 
                 for (var i = 0; i < params.concepts.length; i++) {
@@ -428,6 +438,8 @@ module.exports = function (router) {
                         topicConcepts[params.topic] = [concept];
 
                     }
+
+                    concept_classifications = classify(concept, concept_classifications);
 
                 }
 
@@ -488,6 +500,16 @@ module.exports = function (router) {
             });
 
             fs.writeFile(__dirname + "/../public/data/topic_concepts.json", JSON.stringify(topicConcepts), function (err, file) {
+
+                if (err) {
+
+                    console.log(err.message);
+
+                }
+
+            });
+
+            fs.writeFile(__dirname + "/../public/data/concept_classifications.json", JSON.stringify(concept_classifications), function (err, file) {
 
                 if (err) {
 
@@ -888,7 +910,6 @@ module.exports = function (router) {
 
         })
 
-
     router.route('/fetchTopic/:id')
         .get(function (req, res) {
 
@@ -982,6 +1003,116 @@ module.exports = function (router) {
                     res.status(404).json(JSON.stringify(err));
 
                 })
+
+        })
+
+    router.route('/concept/:id')
+        .get(function (req, res) {
+
+            var dir = __dirname + "/../public/data";
+
+            mkdirp(dir, function (err) {
+
+                // path was created unless there was error
+
+            });
+
+            var url_parts = url.parse(req.url, true);
+
+            var query = url_parts.query;
+
+            var concepts = {};
+
+            if (fs.existsSync(__dirname + "/../public/data/concept_classifications.json")) {
+
+                concepts = JSON.parse(fs.readFileSync(__dirname + "/../public/data/concept_classifications.json"));
+
+            }
+
+            var soundex = clj_fuzzy.phonetics.soundex(query.s);
+
+            var keys = [];
+
+            if (concepts[soundex]) {
+
+                keys = Object.keys(concepts[soundex]);
+
+            }
+
+            var page = parseInt(req.params.id) - 1;
+
+            var result = {
+                data: [],
+                total: keys.length,
+                pages: Math.ceil(keys.length / pageSize),
+                page: page + 1
+            };
+
+            var limit = ((page * pageSize) + pageSize);
+
+            var start = page * pageSize;
+
+            if (limit > keys.length) {
+
+                limit = keys.length;
+
+            }
+
+            for (var i = start; i < limit; i++) {
+
+                var key = keys[i];
+
+                result.data.push(key);
+
+            }
+
+            res.status(200).json(result)
+
+        })
+
+    router.route('/conceptTopics/:id')
+        .get(function (req, res) {
+
+            var dir = __dirname + "/../public/data";
+
+            mkdirp(dir, function (err) {
+
+                // path was created unless there was error
+
+            });
+
+            var topics = [];
+
+            if (fs.existsSync(__dirname + "/../public/data/concepts.json")) {
+
+                topics = JSON.parse(fs.readFileSync(__dirname + "/../public/data/concepts.json"))[req.params.id];
+
+            }
+
+            res.status(200).json(JSON.stringify(topics));
+
+        })
+
+    router.route('/readTopic/:id')
+        .get(function (req, res) {
+
+            var dir = __dirname + "/../public/data";
+
+            mkdirp(dir, function (err) {
+
+                // path was created unless there was error
+
+            });
+
+            var article = "";
+
+            if (fs.existsSync(__dirname + "/../public/data/articles.json")) {
+
+                article = JSON.parse(fs.readFileSync(__dirname + "/../public/data/articles.json"))[req.params.id];
+
+            }
+
+            res.send(article);
 
         })
 
